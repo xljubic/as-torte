@@ -1,0 +1,1 @@
+test;C:\Users\Aleksandar\IdeaProjects\astorte\src;C:\Users\Aleksandar\.m2\repository\org\clojure\clojure\1.12.1\clojure-1.12.1.jar;C:\Users\Aleksandar\.m2\repository\org\clojure\core.specs.alpha\0.4.74\core.specs.alpha-0.4.74.jar;C:\Users\Aleksandar\.m2\repository\org\clojure\spec.alpha\0.5.238\spec.alpha-0.5.238.jar

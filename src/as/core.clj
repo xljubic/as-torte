@@ -1,9 +1,9 @@
 (ns as.core
   (:require [as.data :as data]))
 
-;; ----------------------------------------
+
 ;; Helper: total for a single order
-;; ----------------------------------------
+
 
 (defn order-total
   "Returns total amount (in RSD) for a single order."
@@ -14,9 +14,9 @@
     0
     (:items order)))
 
-;; ----------------------------------------
+
 ;; 1) total-revenue  (reduce over orders)
-;; ----------------------------------------
+
 
 (defn total-revenue
   "Returns total revenue for all orders."
@@ -27,9 +27,9 @@
     0
     orders))
 
-;; ----------------------------------------
+
 ;; 2) cakes-sold-per-type (nested reduce)
-;; ----------------------------------------
+
 
 (defn cakes-sold-per-type
   "Returns a map {cake-type total-qty} for all orders."
@@ -46,9 +46,9 @@
     {}
     orders))
 
-;; ----------------------------------------
+
 ;; 3) revenue-by-delivery (reduce grouping)
-;; ----------------------------------------
+
 
 (defn revenue-by-delivery
   "Returns {:delivery total-delivery-revenue
@@ -65,9 +65,9 @@
      :pickup   0}
     orders))
 
-;; ----------------------------------------
+
 ;; 4) top-customer (two reduces)
-;; ----------------------------------------
+
 
 (defn spending-per-customer
   "Returns a map {customer-name total-spent}."
@@ -94,9 +94,39 @@
       nil
       by-customer)))
 
-;; ----------------------------------------
+(defn customer-segments
+  "Returns a map {customer-name {:total total-spent
+                                 :orders order-count
+                                 :segment :vip/:regular/:new}}.
+   Segment logika (možeš da menjaš granice kako ti odgovara):
+   - :vip     => ukupno >= 15000 RSD
+   - :regular => ukupno >= 8000 RSD
+   - :new     => sve ispod toga."
+  [orders]
+  ;; prvo računamo total i broj porudžbina po mušteriji
+  (let [stats (reduce
+                (fn [acc order]
+                  (let [cust  (:customer order)
+                        total (order-total order)]
+                    (-> acc
+                        (update-in [cust :total]  (fnil + 0) total)
+                        (update-in [cust :orders] (fnil inc 0)))))
+                {}
+                orders)]
+    ;; zatim za svaku mušteriju određujemo segment uz if / else logiku
+    (into {}
+          (map (fn [[cust {:keys [total orders] :as info}]]
+                 (let [segment (if (>= total 15000)
+                                 :vip
+                                 (if (>= total 8000)
+                                   :regular
+                                   :new))]
+                   [cust (assoc info :segment segment)]))
+               stats))))
+
+
 ;; Optional: main for quick demo
-;; ----------------------------------------
+
 
 (defn -main
   [& _]
@@ -104,5 +134,8 @@
     (println "Total revenue:" (total-revenue orders))
     (println "Cakes sold per type:" (cakes-sold-per-type orders))
     (println "Revenue by delivery:" (revenue-by-delivery orders))
-    (println "Top customer:" (top-customer orders))))
+    (println "Customer segments:" (customer-segments orders))
+
+  (println "Top customer:" (top-customer orders))))
+
 

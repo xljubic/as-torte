@@ -10,9 +10,9 @@
   [order]
   (reduce
     (fn [sum item]
-      (+ sum (* (:qty item) (:price item))))
+      (+ sum (* (:item/qty item) (:item/price item))))
     0
-    (:items order)))
+    (:order/items order)))
 
 
 ;; 1) total-revenue  (reduce over orders)
@@ -38,11 +38,11 @@
     (fn [acc order]
       (reduce
         (fn [acc2 item]
-          (update acc2 (:cake item)
+          (update acc2 (:item/cake item)
                   (fnil + 0)
-                  (:qty item)))
+                  (:item/qty item)))
         acc
-        (:items order)))
+        (:order/items order)))
     {}
     orders))
 
@@ -57,7 +57,7 @@
   (reduce
     (fn [acc order]
       (let [total (order-total order)
-            k     (if (:delivery? order)
+            k     (if (:order/delivery? order)
                     :delivery
                     :pickup)]
         (update acc k (fnil + 0) total)))
@@ -75,7 +75,7 @@
   (reduce
     (fn [acc order]
       (let [total (order-total order)]
-        (update acc (:customer order)
+        (update acc (:order/customer order)
                 (fnil + 0)
                 total)))
     {}
@@ -106,7 +106,7 @@
   ;; prvo računamo total i broj porudžbina po mušteriji
   (let [stats (reduce
                 (fn [acc order]
-                  (let [cust  (:customer order)
+                  (let [cust  (:order/customer order)
                         total (order-total order)]
                     (-> acc
                         (update-in [cust :total]  (fnil + 0) total)

@@ -4,9 +4,9 @@
             [as.data :as data]))
 
 (fact "order-total sums items"
-  (core/order-total {:items [{:qty 2 :price 100}
-                             {:qty 1 :price 50}]})
-  => 250)
+      (core/order-total {:order/items [{:item/qty 2 :item/price 100}
+                                       {:item/qty 1 :item/price 50}]})
+      => 250)
 
 (fact "total-revenue returns a number"
   (core/total-revenue data/orders)

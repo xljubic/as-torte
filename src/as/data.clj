@@ -1,41 +1,17 @@
-(ns as.data)
+(ns as.data
+  (:require [as.entities :as e]))
 
 (def orders
-  [{:id 1
-    :customer "Ana"
-    :delivery? true
-    :payment :card
-    :items [{:cake :coko-torta
-             :qty 1
-             :price 3200}
-            {:cake :cheesecake
-             :qty 2
-             :price 2800}]}
+  [(e/order 1 "Ana" true :card
+            [(e/item :coko-torta 1 3200)
+             (e/item :cheesecake 2 2800)])
 
-   {:id 2
-    :customer "Marko"
-    :delivery? false
-    :payment :cash
-    :items [{:cake :coko-torta
-             :qty 1
-             :price 3200}
-            {:cake :plazma-torta
-             :qty 1
-             :price 3000}]}
+   (e/order 2 "Marko" false :cash
+            [(e/item :coko-torta 1 3200)
+             (e/item :plazma-torta 1 3000)])
 
-   {:id 3
-    :customer "Ana"
-    :delivery? true
-    :payment :cash
-    :items [{:cake :cheesecake
-             :qty 1
-             :price 2800}]}
+   (e/order 3 "Ana" true :cash
+            [(e/item :cheesecake 1 2800)])
 
-   {:id 4
-    :customer "Jelena"
-    :delivery? false
-    :payment :card
-    :items [{:cake :mix-kolaci
-             :qty 3
-             :price 1500}]}])
-
+   (e/order 4 "Jelena" false :card
+            [(e/item :mix-kolaci 3 1500)])])
